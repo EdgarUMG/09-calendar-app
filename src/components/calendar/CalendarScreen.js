@@ -7,31 +7,33 @@ import { messages } from '../../helpers/calendar-messages-es';
 import 'moment/locale/es-mx';
 import { CalendarEvent } from './CalendarEvent';
 import { CalendarModal } from './CalendarModal';
+import { useDispatch, useSelector } from 'react-redux';
+import { uiOpenModal } from '../../actions/ui';
+import { eventSetActive } from '../../actions/events';
+import { AddNewFab } from '../ui/AddNewFab';
 
 moment.locale('es');
 const localizer = momentLocalizer(moment);
-const events=[{
-  title: 'Cumpleaños del jefe',
-  start: moment().toDate(),
-  end: moment().add(2,'hours').toDate(),
-  bgcolor: '#fafafa',
-  notes:'Comprar el pastel',
-  user:{
-    _id:'123',
-    name:'Ulises'
-  }
-}]
+
+
 
 export const CalendarScreen = () => {
 
-  const [lastView, setlastView] = useState(localStorage.getItem('lastView') || 'month');
+  //TODO: leer del store, los eventos.
+  const {events}=useSelector(state=>state.calendar)
 
+  const [lastView, setlastView] = useState(localStorage.getItem('lastView') || 'month');
+  //const {modalOpen}=useSelector(state=>state.ui)
+  const dispatch=useDispatch();
   const onDoubleClick=(e)=>{
-    console.log(e);
+    //console.log('abir modal');
+    //modalOpen.value=true;
+    dispatch(uiOpenModal())
   }
 
   const onSelectEvent=(e)=>{
-    console.log(e);
+    dispatch(eventSetActive(e));
+    dispatch(uiOpenModal())
   }
   
   const onViewChange=(e)=>{
@@ -73,6 +75,8 @@ export const CalendarScreen = () => {
             event:CalendarEvent
           }}
         />
+
+        <AddNewFab/>
 
         <CalendarModal/>
     </div>
